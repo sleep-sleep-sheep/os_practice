@@ -1,0 +1,1 @@
+trap.o: trap.S
