@@ -255,8 +255,7 @@ void proc_make_first()
     
     // 释放alloc时获取的锁
     spinlock_release(&proczero->lk);
-    
-    // 替换原有输出：修改格式、前缀、表述内容
+
     printf("[Process Manager] Init process (pid=%d) created successfully. Entry point=0x%lx, User stack top=0x%lx\n", 
            proczero->pid, proczero->tf->epc, proczero->tf->sp);
 }
@@ -267,7 +266,7 @@ int proc_fork()
 {
     proc_t* p = myproc();
     
-    // 替换原有输出：新增进程操作标识，修改调试信息表述
+    //新增进程操作标识，修改调试信息表述
     printf("[Process Operation] Fork request received from process (pid=%d). Starting child process creation...\n", p->pid);
     
     // 分配新进程
@@ -333,7 +332,6 @@ int proc_fork()
     // 设置子进程状态为RUNNABLE
     np->state = RUNNABLE;
     
-    // 替换原有输出：增强信息维度，修改表述风格
     printf("[Process Operation] Child process (pid=%d) created successfully by parent (pid=%d). Ready for scheduling.\n", 
            pid, p->pid);
     
@@ -363,7 +361,7 @@ int proc_wait(uint64 addr)
     proc_t* p = myproc();
     int havekids, pid;
     
-    // 替换原有输出：修改等待操作的表述，增加进程标识清晰度
+
     printf("[Process Synchronization] Process (pid=%d) entering wait state, waiting for child process exit...\n", p->pid);
     
     spinlock_acquire(&p->lk);
@@ -408,7 +406,6 @@ int proc_wait(uint64 addr)
         }
         
         // 等待子进程退出
-        // 替换原有输出：修改睡眠操作的表述，增加进程状态信息
         printf("[Process Synchronization] Process (pid=%d) has no exited children, entering sleep state...\n", p->pid);
         proc_sleep(p, &p->lk);
         printf("[Process Synchronization] Process (pid=%d) woken up, resuming wait operation...\n", p->pid);
@@ -442,7 +439,7 @@ void proc_exit(int exit_state)
 {
     proc_t* p = myproc();
     
-    // 替换原有输出：修改退出操作的表述，增加退出状态信息
+
     printf("[Process Operation] Process (pid=%d) initiating exit procedure, exit status: %d\n", p->pid, exit_state);
     
     if (p == proczero) {
@@ -452,8 +449,7 @@ void proc_exit(int exit_state)
     // 将子进程托付给proczero
     proc_reparent(p);
     
-    // 唤醒父进程（它可能在wait中睡眠）
-    // 替换原有输出：修改唤醒操作的表述，增加父子进程标识
+    // 唤醒父进程
     printf("[Process Synchronization] Process (pid=%d) waking up its parent process (pid=%d) for exit notification...\n", 
            p->pid, p->parent->pid);
     proc_wakeup_one(p->parent);
@@ -463,7 +459,7 @@ void proc_exit(int exit_state)
     p->exit_state = exit_state;
     p->state = ZOMBIE;
     
-    // 替换原有输出：修改僵尸进程的表述，增加进程状态信息
+    // 僵尸进程
     printf("[Process Operation] Process (pid=%d) has entered ZOMBIE state, waiting for parent to reclaim resources.\n", p->pid);
     
     // 切换到调度器，永不返回
@@ -509,7 +505,7 @@ void proc_scheduler()
     // 记录每个CPU上一次运行的进程pid，用于减少重复输出
     static int last_pid[NCPU] = {-1, -1};
     
-    // 替换原有输出：修改调度器入口的表述，增加CPU标识清晰度
+
     printf("[Scheduler] CPU %d has entered the global process scheduler loop.\n", mycpuid());
     
     for (;;) {
